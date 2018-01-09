@@ -31,13 +31,6 @@ public class DateIndexFormatterTest {
     private final IndexFormatter formatter = new DateIndexFormatter();
 
     @Test
-    public void testTimeYMDFormat() {
-        formatter.configure("YYYY.MM.dd");
-        String date = convertPigDate("2014-10-05T19:09:52.000Z");
-        assertThat(formatter.format(date), is("2014.10.05"));
-    }
-
-    @Test
     public void testTimeYMFormat() {
         formatter.configure("YYYY-MM");
         assertThat(formatter.format("2014-10-06T19:20:25.000Z"), is("2014-10"));

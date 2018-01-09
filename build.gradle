@@ -591,19 +591,9 @@ project(":elasticsearch-hadoop-hive") {
 
 // reusable method to nest Map/Reduce module in the rest of the projects to make them usable stand-alone
 def baseSparkProject(target, sparkVersion) {
-   def scalaVer = project.hasProperty("scala") ? project.getProperty("scala") : "210"
+    ext.scalaVersion = scala211Version
+    ext.scalaMajorVersion = scala211MajorVersion
 
-    switch (scalaVer) {
-      case "211":
-        ext.scalaVersion = scala211Version
-        ext.scalaMajorVersion = scala211MajorVersion
-        break;
-
-      default:
-        ext.scalaVersion = scala210Version
-        ext.scalaMajorVersion = scala210MajorVersion
-    }
-    
     target.archivesBaseName += "_$scalaMajorVersion"
 
     target.apply plugin: 'scala'
@@ -631,19 +621,17 @@ def baseSparkProject(target, sparkVersion) {
     println "Spark $sparkVersion compiled using Scala $scalaMajorVersion [$scalaVersion]"
 
     // when using Scala 2.11 use a different folder to cache the artifacts between builds
-    if (scalaVer == "211") {
-      target.sourceSets.each { 
+    target.sourceSets.each {
         it.output.classesDir = file(it.output.classesDir.absolutePath.replaceAll("classes", "classes.211"))
-      }
-      target.javadoc {
+    }
+    target.javadoc {
         destinationDir = file("$project.docsDir/javadoc-211")
-      }
-      target.integrationTest {
+    }
+    target.integrationTest {
         // update test target
         testClassesDir = target.sourceSets.itest.output.classesDir
-      }
     }
-    
+
     def coreSrc = file("$target.projectDir/../core").absolutePath.replace('\\','/')
     
     target.sourceSets {
